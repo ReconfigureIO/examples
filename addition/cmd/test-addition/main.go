@@ -18,7 +18,7 @@ func main() {
 	krnl := world.Import("kernel_test").GetKernel("reconfigure_io_sdaccel_builder_stub_0_1")
 	defer krnl.Release()
 
-	// Allocate a buffer on the FPGA store the return value of our computation
+	// Allocate a buffer on the FPGA to store the return value of our computation
 	// The output is a uint32, so we need 4 bytes to store it
 	buff := world.Malloc(xcl.WriteOnly, 4)
 	defer buff.Free()
@@ -35,7 +35,7 @@ func main() {
 	// Run the kernel with the supplied arguments
 	krnl.Run(1, 1, 1)
 
-	// Read the output of into a local byte slice
+	// Read the output of the computation into a local byte slice
 	resp := make([]byte, 4)
 	buff.Read(resp)
 
