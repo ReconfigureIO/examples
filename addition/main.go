@@ -7,12 +7,19 @@ import (
 	"sdaccel/memory"
 )
 
-// magic identifier for exporting
+// The Top function will be presented as a kernel
 func Top(
+	// The first set of arguments to this function can be any number
+	// of Go primitive types and can be provided via `SetArg` on the host.
+
+	// For this example, we have 3 arguments: two operands to add
+	// together and an address to memory (the uint32s) on the FPGA to
+	// store the output (the uintptr)
 	a uint32,
 	b uint32,
 	addr uintptr,
 
+	// The second set of arguments will be the ports for interacting with memory
 	memReadAddr chan<- memory.Addr,
 	memReadData <-chan memory.ReadData,
 
@@ -20,10 +27,12 @@ func Top(
 	memWriteData chan<- memory.WriteData,
 	memResp <-chan memory.Response) {
 
-	// Disable memory reads
+	// Since we're not reading anything from memory, disable those reads
 	go memory.DisableReads(memReadAddr, memReadData)
 
+	// Calculate the value
 	val := a + b
 
+	// Write it back to the pointer the host requests
 	memory.Write(addr, val, memWriteAddr, memWriteData, memResp)
 }
