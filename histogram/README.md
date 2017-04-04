@@ -1,20 +1,20 @@
-# Addition Example
+# Histogram Example
 
 ## Structure
 
 This directory contains a kernel located at `main.go`. It also has a
-command, `test-addition` located at `cmd/test-addition/main.go`.
+command, `test-histogram` located at `cmd/test-histogram/main.go`.
 
 ## Testing
 
 To run this example in a simulator, execute the following:
 
 ```
-reco test test-addition
+reco test test-histogram
 ```
 
 This will simulate the kernel using a hardware simulator, and test it
-using the `test-addition` command.
+using the `test-histogram` command.
 
 ## Building
 

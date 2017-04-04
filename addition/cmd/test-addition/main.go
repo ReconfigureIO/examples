@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/binary"
 	"fmt"
 	"os"
@@ -35,13 +34,9 @@ func main() {
 	// Run the kernel with the supplied arguments
 	krnl.Run(1, 1, 1)
 
-	// Read the output of the computation into a local byte slice
-	resp := make([]byte, 4)
-	buff.Read(resp)
-
 	// Decode that byte slice into the uint32 we're expecting
 	var ret uint32
-	err := binary.Read(bytes.NewReader(resp), binary.LittleEndian, &ret)
+	err := binary.Read(buff.Reader(), binary.LittleEndian, &ret)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
