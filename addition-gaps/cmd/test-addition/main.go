@@ -29,7 +29,7 @@ func main() {
 	// Set the second operand to 2
 	// YOUR CODE HERE
 	// Set the pointer to the output buffer
-	krnl.SetMemoryArg(2, buff)
+	// YOUR CODE HERE
 
 	// Run the kernel with the supplied arguments
 	krnl.Run(1, 1, 1)
