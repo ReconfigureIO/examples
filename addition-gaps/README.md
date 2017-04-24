@@ -1,5 +1,5 @@
 # Addition Example - tutorial
-This is the incomplete addition example code to be used along with our second tutorial: [ADD LINK]
+This is the incomplete addition example code to be used along with our second tutorial: http://docs.reconfigure.io/tutorial_2_addition.html
 
 ## Structure
 
