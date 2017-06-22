@@ -1,77 +1,73 @@
 package main
 
 import (
-	// import the entire framework (including bundled verilog)
+	// Import the entire framework (including bundled verilog)
 	_ "sdaccel"
-	"sdaccel/memory"
+
+	axiarbitrate "axi/arbitrate"
+	aximemory "axi/memory"
+	axiprotocol "axi/protocol"
 )
 
-// magic identifier for exporting
+// Magic identifier for exporting
 func Top(
 	inputData uintptr,
 	outputData uintptr,
 	length uint32,
 
-	memReadAddr chan<- memory.Addr,
-	memReadData <-chan memory.ReadData,
+	memReadAddr chan<- axiprotocol.Addr,
+	memReadData <-chan axiprotocol.ReadData,
 
-	memWriteAddr chan<- memory.Addr,
-	memWriteData chan<- memory.WriteData,
-	memResp <-chan memory.Response) {
+	memWriteAddr chan<- axiprotocol.Addr,
+	memWriteData chan<- axiprotocol.WriteData,
+	memWriteResp <-chan axiprotocol.WriteResp) {
 
-	readChan := make(chan uintptr)
 	readRespChan := make(chan uint32)
+	incrRespChan := make(chan uint32)
 
-	incrChan := make(chan uintptr)
-	incrResp := make(chan uint32)
-
-	go func() {
-		for {
-			var addr uintptr
-
-			// This block provides single access to memory, with two
-			// separate operations: reading or incrementing a pointer
-			// in memory.
-
-			// All access is through channels allowing operations to
-			// be enqueued, only blocking when the response is needed
-			select {
-			case addr = <-readChan:
-				readRespChan <- memory.Read(addr, memReadAddr, memReadData)
-			case addr = <-incrChan:
-				current := memory.Read(addr, memReadAddr, memReadData)
-				memory.Write(addr, current+1, memWriteAddr, memWriteData, memResp)
-				incrResp <- current + 1
-			}
-		}
-	}()
+	// Create a 2-way AXI bus arbiter so that two goroutines can perform
+	// concurrent AXI memory reads.
+	memReadAddr0 := make(chan axiprotocol.Addr)
+	memReadData0 := make(chan axiprotocol.ReadData)
+	memReadAddr1 := make(chan axiprotocol.Addr)
+	memReadData1 := make(chan axiprotocol.ReadData)
+	go axiarbitrate.ReadArbitrateX2(
+		memReadAddr, memReadData, memReadAddr0, memReadData0,
+		memReadAddr1, memReadData1)
 
 	go func() {
-		// length is the number of addresses we are supposed to read
-		// so this block enqueues each address to read.
-		for i := length; i > 0; i-- {
-			readChan <- inputData
+		// Length is the number of addresses we are supposed to read
+		// so this block queues reads from each one in turn.
+		for i := length; i != 0; i-- {
+			readRespChan <- aximemory.ReadUInt32(
+				memReadAddr0, memReadData0, true, inputData)
 			inputData += 4
 		}
 	}()
 
 	go func() {
-		for i := length; i > 0; i-- {
-			// get the read response that was previously enqueued.
+		for i := length; i != 0; i-- {
+			// Get the read response that was previously enqueued.
 			sample := <-readRespChan
-			// If we think of external memory we are writing to as a [512]uint32, this would be the index we access
+			// If we think of external memory we are writing to as a
+			// [512]uint32, this would be the index we access.
 			index := uint16(sample) >> (16 - 9)
-			pointerDiff := index << 2
-			// And this is that index as a pointer to external memory
-			outputPointer := outputData + uintptr(pointerDiff)
-			// enqueue an increment operation on that pointer
-			incrChan <- outputPointer
+			// And this is that index as a pointer to external memory.
+			outputPointer := outputData + uintptr(index<<2)
+			// Perform an increment operation on that location.
+			current := aximemory.ReadUInt32(
+				memReadAddr1, memReadData1, true, outputPointer)
+			current += 1
+			aximemory.WriteUInt32(
+				memWriteAddr, memWriteData, memWriteResp, true,
+				outputPointer, current)
+			incrRespChan <- current
 		}
 	}()
 
-	// Wait for each response for increment operations
-	for i := length; i > 0; i-- {
-		<-incrResp
+	// Wait for each response for increment operations.
+	for i := length; i != 0; i-- {
+		<-incrRespChan
 	}
 
 	// Once that's done, we can exit.

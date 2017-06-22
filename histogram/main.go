@@ -1,37 +1,43 @@
 package main
 
 import (
-	// import the entire framework (including bundled verilog)
+	// Import the entire framework (including bundled verilog)
 	_ "sdaccel"
-	"sdaccel/memory"
+	// Use the new AXI protocol package
+	aximemory "axi/memory"
+	axiprotocol "axi/protocol"
 )
 
-// magic identifier for exporting
+// Magic identifier for exporting
 func Top(
 	inputData uintptr,
 	outputData uintptr,
 	length uint32,
 
-	memReadAddr chan<- memory.Addr,
-	memReadData <-chan memory.ReadData,
+	memReadAddr chan<- axiprotocol.Addr,
+	memReadData <-chan axiprotocol.ReadData,
 
-	memWriteAddr chan<- memory.Addr,
-	memWriteData chan<- memory.WriteData,
-	memResp <-chan memory.Response) {
+	memWriteAddr chan<- axiprotocol.Addr,
+	memWriteData chan<- axiprotocol.WriteData,
+	memWriteResp <-chan axiprotocol.WriteResp) {
 
 	// The host needs to provide the length we should read
 	for ; length > 0; length-- {
 		// First we'll read each sample
-		sample := memory.Read(inputData, memReadAddr, memReadData)
-		// If we think of external memory we are writing to as a [512]uint32, this would be the index we access
-		index := uint16(sample) >> (16 - 9)
-		pointerDiff := index << 2
-		// And this is that index as a pointer to external memory
-		outputPointer := outputData + uintptr(pointerDiff)
+		sample := aximemory.ReadUInt32(
+			memReadAddr, memReadData, true, inputData)
 
-		current := memory.Read(outputPointer, memReadAddr, memReadData)
+		// If we think of external memory we are writing to as a
+		// [512]uint32, this would be the index we access, with an
+		// extra 2 bits to make it a pointer
+		outputPointer := outputData + uintptr((uint16(sample)>>(16-9))<<2)
 
-		memory.Write(outputPointer, current+1, memWriteAddr, memWriteData, memResp)
+		current := aximemory.ReadUInt32(
+			memReadAddr, memReadData, true, outputPointer)
+
+		aximemory.WriteUInt32(
+			memWriteAddr, memWriteData, memWriteResp, true,
+			outputPointer, current+1)
 
 		inputData += 4
 	}
