@@ -1,10 +1,11 @@
 package main
 
 import (
-	// import the entire framework (including bundled verilog)
+	// Import the entire framework (including bundled verilog)
 	_ "sdaccel"
 
-	"sdaccel/memory"
+	aximemory "axi/memory"
+	axiprotocol "axi/protocol"
 )
 
 // The Top function will be presented as a kernel
@@ -20,19 +21,20 @@ func Top(
 	// YOUR CODE: declare the memory address for the FPGA to store the result
 
 	// The second set of arguments will be the ports for interacting with memory
-	memReadAddr chan<- memory.Addr,
-	memReadData <-chan memory.ReadData,
+	memReadAddr chan<- axiprotocol.Addr,
+	memReadData <-chan axiprotocol.ReadData,
 
-	memWriteAddr chan<- memory.Addr,
-	memWriteData chan<- memory.WriteData,
-	memResp <-chan memory.Response) {
+	memWriteAddr chan<- axiprotocol.Addr,
+	memWriteData chan<- axiprotocol.WriteData,
+	memWriteResp <-chan axiprotocol.WriteResp) {
 
 	// Since we're not reading anything from memory, disable those reads
-	go memory.DisableReads(memReadAddr, memReadData)
+	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
 	// Calculate the value
-	// YOUR CODE: Perform the addition here 
+	// YOUR CODE: Perform the addition here
 
 	// Write it back to the pointer the host requests
-	memory.Write(addr, val, memWriteAddr, memWriteData, memResp)
+	aximemory.WriteUInt32(
+		memWriteAddr, memWriteData, memWriteResp, false, addr, val)
 }
