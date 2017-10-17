@@ -9,7 +9,7 @@ func Top(
 
     ...
 
-    // Next set up channels for interacting with the shared memory
+    // Set up channels for interacting with the shared memory
     memReadAddr chan<- axiprotocol.Addr,
     memReadData <-chan axiprotocol.ReadData,
 
@@ -21,7 +21,7 @@ func Top(
 
     ...
 
-    // Write the result to the location in shared memory dictated by the host
+    // Write the result to the location in shared memory as requested by the host
     aximemory.WriteUInt32(
         memWriteAddr, memWriteData, memWriteResp, false, addr, uint32(val))
 }
