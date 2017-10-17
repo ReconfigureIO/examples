@@ -4,7 +4,8 @@ import (
 )
 
 func Top(
-    // Specify inputs and outputs to the kernel here. You can tell the kernel where to find data in shared memory, what data type to // expect or pass single integers directly to the kernel by sending them to the FPGA's control register.
+    // Specify inputs and outputs to the kernel. Tell the kernel where to find data in shared memory, what data type
+    // to expect or pass single integers directly to the kernel by sending them to the FPGA's control register
 
     ...
 
@@ -20,7 +21,7 @@ func Top(
 
     ...
 
-    // Write it back to the pointer the host requests
+    // Write the result to the location in shared memory dictated by the host
     aximemory.WriteUInt32(
         memWriteAddr, memWriteData, memWriteResp, false, addr, uint32(val))
 }

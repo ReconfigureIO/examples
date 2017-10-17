@@ -1,13 +1,12 @@
 package main
 
 import (
-    "encoding/binary"
     "os"
     "xcl"
 )
 
 func main() {
-    // Allocate a world for interacting with kernels
+    // Allocate a 'world' for interacting with kernels
     world := xcl.NewWorld()
     defer world.Release()
 
@@ -21,7 +20,8 @@ func main() {
     defer buff.Free()
 
     // Pass the arguments to the kernel. These could be small pieces of data, pointers to
-  // memory, lengths to tell the Kernel what to expect. This depends on your project.
+    // memory, data lengths so the Kernel knows what to expect. This all depends on your project.
+    // We have passed three arguments here, you can pass more as neccessary
 
     // First argument
     krnl.SetArg(0, <first>)
@@ -31,9 +31,12 @@ func main() {
     krnl.SetMemoryArg(2, <third>)
 
     // Run the kernel with the supplied arguments. This is the same for all projects.
-  // The arguments ``(1, 1, 1)`` relate to x, y, z co-ordinates and correspond to our current
-  // underlying technology.
+    // The arguments ``(1, 1, 1)`` relate to x, y, z co-ordinates and correspond to our current
+    // underlying technology.
     krnl.Run(1, 1, 1)
 
     // Display/use the results returned from the FPGA as required!
+
+    ...
+
 }
