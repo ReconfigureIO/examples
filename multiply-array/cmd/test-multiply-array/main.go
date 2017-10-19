@@ -45,11 +45,11 @@ func main() {
   	binary.Write(outputBuff.Writer(), binary.LittleEndian, &output)
 
     // Send the location of the input array as the first argument
-    krnl.SetArg(0, buff)
+    krnl.SetMemoryArg(0, buff)
     // Send the location the FPGA should put the result as the second argument
-    krnl.SetArg(1, outputBuff)
+    krnl.SetMemoryArg(1, outputBuff)
     // Send the length of the input array, so the kernel knows what to expect, as the third argument
-    krnl.SetMemoryArg(2, uint32(len(input)))
+    krnl.SetArg(2, uint32(len(input)))
 
     // Run the kernel with the supplied arguments. This is the same for all projects.
     // The arguments ``(1, 1, 1)`` relate to x, y, z co-ordinates and correspond to our current
