@@ -1,6 +1,12 @@
 package main
 
 import (
+    // Import the entire framework (including bundled verilog)
+    _ "sdaccel"
+
+    // Use the new AXI protocol package
+    aximemory "axi/memory"
+    axiprotocol "axi/protocol"
 )
 
 func Top(

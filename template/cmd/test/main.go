@@ -19,8 +19,8 @@ func main() {
     buff := world.Malloc(xcl.WriteOnly, <size here>)
     defer buff.Free()
 
-    // Pass the arguments to the kernel. These could be small pieces of data, pointers to
-    // memory, data lengths so the Kernel knows what to expect. This all depends on your project.
+    // Create/get data and pass arguments to the kernel as required. These could be small pieces of data,
+    // pointers to memory, data lengths so the Kernel knows what to expect. This all depends on your project.
     // We have passed three arguments here, you can pass more as neccessary
 
     // First argument
