@@ -1,7 +1,7 @@
 package main
 
 import (
-    "os"
+    "encoding/binary"
     "xcl"
     "fmt"
 )
