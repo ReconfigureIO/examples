@@ -28,12 +28,6 @@ func main() {
   		input[i] = uint32(i)
   	}
 
-    fmt.Println("Here is our example array:")
-
-    for _, val := range input {
-      print(val)
-    }
-
     // Create space in shared memory for our array input
   	buff := world.Malloc(xcl.ReadOnly, uint(binary.Size(input)))
   	defer buff.Free()
@@ -66,8 +60,6 @@ func main() {
     // Display/use the results returned from the FPGA as required!
 
     binary.Read(outputBuff.Reader(), binary.LittleEndian, &output);
-
-    fmt.Println("...and here is our array with each integer multiplied by 2.")
 
     for _, val := range output {
       print(val)
