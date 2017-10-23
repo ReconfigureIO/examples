@@ -3,6 +3,7 @@ package main
 import (
     "encoding/binary"
     "xcl"
+    "fmt"
 )
 
 func main() {
