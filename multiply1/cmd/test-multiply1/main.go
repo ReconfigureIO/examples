@@ -36,7 +36,7 @@ func main() {
 
     // Display/use the results returned from the FPGA as required!
   	var output uint32
-  	binary.Read(outputBuff.Reader(), binary.LittleEndian, &output);
+  	binary.Read(buff.Reader(), binary.LittleEndian, &output);
 
   	// Print the value we got from the FPGA
   	fmt.Printf("%d\n", output)
