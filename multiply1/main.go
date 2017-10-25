@@ -13,8 +13,8 @@ func Top(
     // Specify inputs and outputs to the kernel. Tell the kernel where to find data in shared memory, what data type
     // to expect or pass single integers directly to the kernel by sending them to the FPGA's control register
 
-    a uint32
-    addr uintptr
+    a uint32,
+    addr uintptr,
 
     // Set up channels for interacting with the shared memory
     memReadAddr chan<- axiprotocol.Addr,
