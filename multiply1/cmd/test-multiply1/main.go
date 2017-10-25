@@ -35,10 +35,10 @@ func main() {
     krnl.Run(1, 1, 1)
 
     // Display/use the results returned from the FPGA as required!
-  	var ret uint32
-  	err := binary.Read(buff.Reader(), binary.LittleEndian, &ret)
+  	var output uint32
+  	binary.Read(outputBuff.Reader(), binary.LittleEndian, &output);
 
   	// Print the value we got from the FPGA
-  	fmt.Printf("%d\n", ret)
+  	fmt.Printf("%d\n", output)
 
 }
