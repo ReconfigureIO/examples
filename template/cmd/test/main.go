@@ -15,9 +15,13 @@ func main() {
     krnl := world.Import("kernel_test").GetKernel("reconfigure_io_sdaccel_builder_stub_0_1")
     defer krnl.Release()
 
-    // Allocate a space in the shared memory to store the results from the FPGA
-    buff := world.Malloc(xcl.WriteOnly, <size here>)
-    defer buff.Free()
+    // Allocate a space in the shared memory to store the data you're sending to the FPGA and space
+    // for the results from the FPGA
+    buff := world.Malloc(xcl.ReadOnly, <size here>)
+	  defer buff.Free()
+
+    outputBuff := world.Malloc(xcl.WriteOnly, <size here>)
+    defer outputBuff.Free()
 
     // Create/get data and pass arguments to the kernel as required. These could be small pieces of data,
     // pointers to memory, data lengths so the Kernel knows what to expect. This all depends on your project.
