@@ -17,7 +17,7 @@ func main() {
 
     // Allocate a space in the shared memory to store the data you're sending to the FPGA and space
     // for the results from the FPGA
-    buff := world.Malloc(xcl.ReadOnly, <size here>)
+    inputBuff := world.Malloc(xcl.ReadOnly, <size here>)
 	  defer buff.Free()
 
     outputBuff := world.Malloc(xcl.WriteOnly, <size here>)
