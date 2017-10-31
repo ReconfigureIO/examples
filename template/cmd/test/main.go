@@ -25,6 +25,8 @@ func main() {
 
     // Create/get data and pass arguments to the kernel as required. These could be small pieces of data,
     // pointers to memory, data lengths so the Kernel knows what to expect. This all depends on your project.
+    // Usually, you will send data via shared memory, so you will need to write it to the space you allocated
+    // above before passing the pointer to the kernel
     // We have passed three arguments here, you can pass more as neccessary
 
     // First argument

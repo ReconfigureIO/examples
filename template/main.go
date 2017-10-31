@@ -29,5 +29,5 @@ func Top(
 
     // Write the result to the location in shared memory as requested by the host
     aximemory.WriteUInt32(
-        memWriteAddr, memWriteData, memWriteResp, false, addr, uint32(val))
+        memWriteAddr, memWriteData, memWriteResp, true, <results_pointer>, <results_data>)
 }
