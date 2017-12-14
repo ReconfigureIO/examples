@@ -2,8 +2,8 @@ package main
 
 import (
 	// import the entire framework (including bundled verilog)
-	_ "sdaccel"
-	"sdaccel/memory"
+	_ "github.com/ReconfigureIO/sdaccel"
+	"github.com/ReconfigureIO/sdaccel/axi/memory"
 )
 
 // magic identifier for exporting
