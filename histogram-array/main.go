@@ -8,6 +8,11 @@ import (
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
+// calculate the bin for the histogram
+func CalculateIndex(sample uint32) uint16 {
+	return uint16(sample) >> (16 - 9)
+}
+
 // magic identifier for exporting
 func Top(
 	inputData uintptr,
@@ -32,11 +37,9 @@ func Top(
 	for ; length > 0; length-- {
 		// First we'll pull of each sample from the channel
 		sample := <-inputChan
-		// calculate the bin for the histogram
-		index := uint16(sample) >> (16 - 9)
 
 		// And increment the value in that bin
-		histogram[uint(index)] += 1
+		histogram[CalculateIndex(sample)] += 1
 	}
 
 	data := make(chan uint32)
