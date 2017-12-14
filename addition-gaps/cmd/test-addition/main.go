@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/ReconfigureIO/sdaccel/xcl"
 	"os"
-	"xcl"
 )
 
 func main() {

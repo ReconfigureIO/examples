@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/binary"
+	"github.com/ReconfigureIO/sdaccel/xcl"
 	"log"
 	"math/rand"
 	"reflect"
 	"testing/quick"
 	"time"
-	"xcl"
 )
 
 const DATA_WIDTH = 12

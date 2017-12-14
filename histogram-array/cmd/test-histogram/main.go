@@ -3,10 +3,10 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/ReconfigureIO/sdaccel/xcl"
 	"log"
 	"math/rand"
 	"reflect"
-	"xcl"
 )
 
 const (

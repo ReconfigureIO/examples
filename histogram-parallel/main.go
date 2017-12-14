@@ -2,11 +2,11 @@ package main
 
 import (
 	// Import the entire framework (including bundled verilog)
-	_ "sdaccel"
+	_ "github.com/ReconfigureIO/sdaccel"
 
-	axiarbitrate "axi/arbitrate"
-	aximemory "axi/memory"
-	axiprotocol "axi/protocol"
+	axiarbitrate "github.com/ReconfigureIO/sdaccel/axi/arbitrate"
+	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
+	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
 // Magic identifier for exporting

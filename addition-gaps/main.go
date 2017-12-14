@@ -2,10 +2,10 @@ package main
 
 import (
 	// Import the entire framework (including bundled verilog)
-	_ "sdaccel"
+	_ "github.com/ReconfigureIO/sdaccel"
 
-	aximemory "axi/memory"
-	axiprotocol "axi/protocol"
+	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
+	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
 // The Top function will be presented as a kernel
