@@ -1,17 +1,17 @@
 package main
 
 import (
-	// Import the entire framework (including bundled verilog)
+	// Import the entire framework for interracting with SDAccel from Go (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
 
-	// Use the new AXI protocol package
+	/// Use the new AXI protocol package for interracting with memory
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
 func Top(
-	// Specify inputs and outputs to the kernel. Tell the kernel where to find data in shared memory, what data type
-	// to expect or pass single integers directly to the kernel by sending them to the FPGA's control register
+	// Pass two operands to the FPGA, the integer to be multiplied and a pointer to the
+	// space in shared memory where it should store the result.
 
 	a uint32,
 	addr uintptr,
@@ -26,8 +26,6 @@ func Top(
 
 	// Since we're not reading anything from memory, disable those reads
 	go axiprotocol.ReadDisable(memReadAddr, memReadData)
-
-	// Do whatever needs doing with the data from the host
 
 	// Multiply incoming data by 2
 	val := a * 2

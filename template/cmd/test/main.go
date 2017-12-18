@@ -6,11 +6,11 @@ import (
 )
 
 func main() {
-    // Allocate a 'world' for interacting with kernels
+    // Allocate a 'world' for interacting with and FPGA
     world := xcl.NewWorld()
     defer world.Release()
 
-    // Import the kernel.
+    // Import the compiled code that will be loaded onto the FPGA (referred to here as a kernel)
     // Right now these two identifiers are hard coded as an output from the build process
     krnl := world.Import("kernel_test").GetKernel("reconfigure_io_sdaccel_builder_stub_0_1")
     defer krnl.Release()
@@ -23,10 +23,10 @@ func main() {
     outputBuff := world.Malloc(xcl.WriteOnly, <size here>)
     defer outputBuff.Free()
 
-    // Create/get data and pass arguments to the kernel as required. These could be small pieces of data,
-    // pointers to memory, data lengths so the Kernel knows what to expect. This all depends on your project.
+    // Create/get data and pass arguments to the FPGA as required. These could be small pieces of data,
+    // pointers to memory, data lengths so the FPGA knows what to expect. This all depends on your project.
     // Usually, you will send data via shared memory, so you will need to write it to the space you allocated
-    // above before passing the pointer to the kernel
+    // above before passing the pointer to the FPGA.
     // We have passed three arguments here, you can pass more as neccessary
 
     // First argument
@@ -36,7 +36,7 @@ func main() {
     // Third argument
     krnl.SetMemoryArg(2, <third>)
 
-    // Run the kernel with the supplied arguments. This is the same for all projects.
+    // Run the FPGA with the supplied arguments. This is the same for all projects.
     // The arguments ``(1, 1, 1)`` relate to x, y, z co-ordinates and correspond to our current
     // underlying technology.
     krnl.Run(1, 1, 1)
