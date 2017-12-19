@@ -9,6 +9,7 @@ import (
 	"reflect"
 )
 
+// Define constants to be used in func main
 const (
 	// The maximum bit width we allow values to have
 	MAX_BIT_WIDTH = 16
@@ -19,69 +20,70 @@ const (
 )
 
 func main() {
-	// Setup a new world for accessing our kernel
+	// Allocate a 'world' for interacting with the FPGA
 	world := xcl.NewWorld()
 	defer world.Release()
 
-	// Import the "kernel_test" file for our FPGA, generated as part
-	// of the build process, and from that get the kernel named
-	// "reconfigure_io_sdaccel_builder_stub_0_1", which is currently hardcoded
+	// Import the compiled code that will be loaded onto the FPGA (referred to here as a kernel)
+	// Right now these two identifiers are hard coded as an output from the build process
 	krnl := world.Import("kernel_test").GetKernel("reconfigure_io_sdaccel_builder_stub_0_1")
 	defer krnl.Release()
 
-	// The data we'll send to the kernel for processing
+	// Define a new array for the data we'll send to the FPGA for processing
 	input := make([]uint32, 20)
 
-	// seed it with 20 random values, bound to 0 - 2**16
+	// Seed it with 20 random values, bound to 0 - 2**16
 	for i, _ := range input {
 		input[i] = uint32(uint16(rand.Uint32()))
 	}
 
-	// On the FGPA, allocated ReadOnly memory for the input to the kernel.
+	// Allocate a space in the shared memory to store the data you're sending to the FPGA
 	buff := world.Malloc(xcl.ReadOnly, uint(binary.Size(input)))
 	defer buff.Free()
 
-	// Construct our local output
+	// Construct an array to hold the output data from the FPGA
 	var output [HISTOGRAM_WIDTH]uint32
 
-	// On the FGPA, allocated ReadWrite memory for the output from the kernel.
+	// Allocate a space in the shared memory to store the output data from the FPGA.
 	outputBuff := world.Malloc(xcl.ReadWrite, uint(binary.Size(output)))
 	defer outputBuff.Free()
 
-	// write our input to the kernel at the memory we've previously allocated
+	// Write our input data to shared memory at the address we previously allocated
 	binary.Write(buff.Writer(), binary.LittleEndian, &input)
 
-	// zero out output buffer
+	// Zero out the space in shared memory for the result from the FPGA
 	binary.Write(outputBuff.Writer(), binary.LittleEndian, &output)
 
-	// Pass the pointer to the input memory on the FPGA as the first argument
+	// Pass the pointer to the input data in shared memory as the first argument
 	krnl.SetMemoryArg(0, buff)
-	// Pass the pointer to the output memory on the FPGA as the second argument
+	// Pass the pointer to the memory location reserved for the result as the second argument
 	krnl.SetMemoryArg(1, outputBuff)
 	// Pass the total length of the input as the third argument
 	krnl.SetArg(2, uint32(len(input)))
 
-	// Run the kernel
+	// Run the FPGA with the supplied arguments. This is the same for all projects.
+	// The arguments ``(1, 1, 1)`` relate to x, y, z co-ordinates and correspond to our current
+	// underlying technology.
 	krnl.Run(1, 1, 1)
 
-	// Read the output from the memory on the FPGA
+	// Read the result from shared memory. If it is zero return an error
 	err := binary.Read(outputBuff.Reader(), binary.LittleEndian, &output)
 	if err != nil {
 		log.Fatal("binary.Read failed:", err)
 	}
 
-	// Calculate the same values as the kernel did for a test
+	// Calculate the same values locally to check the FPGA got it right
 	var expected [HISTOGRAM_WIDTH]uint32
 	for _, val := range input {
 		expected[val>>(MAX_BIT_WIDTH-HISTOGRAM_BIT_WIDTH)] += 1
 	}
 
-	// error if they didn't do the same calculation
+	// Return an error if the local and FPGA calculations do not give the same result
 	if !reflect.DeepEqual(expected, output) {
 		log.Fatalf("%v != %v\n", output, expected)
 	}
 
-	// Print out each bucket, and value
+	// Print out each bin and coresponding value
 	for i, val := range output {
 		fmt.Printf("%d: %d\n", i<<(MAX_BIT_WIDTH-HISTOGRAM_BIT_WIDTH), val)
 	}

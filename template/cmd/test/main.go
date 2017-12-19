@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-    // Allocate a 'world' for interacting with and FPGA
+    // Allocate a 'world' for interacting with the FPGA
     world := xcl.NewWorld()
     defer world.Release()
 

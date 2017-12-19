@@ -1,20 +1,23 @@
 package main
 
 import (
-	// Import the entire framework (including bundled verilog)
+	// Import the entire framework for interracting with SDAccel from Go (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
 
+  // Use the new AXI protocol package for interracting with memory
 	axiarbitrate "github.com/ReconfigureIO/sdaccel/axi/arbitrate"
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
-// Magic identifier for exporting
 func Top(
+	// Three operands from the host. Pointers to the input data and the space for the result in shared
+	// memory and the length of the input data so the FPGA knows what to expect.
 	inputData uintptr,
 	outputData uintptr,
 	length uint32,
 
+	// Set up channels for interacting with the shared memory
 	memReadAddr chan<- axiprotocol.Addr,
 	memReadData <-chan axiprotocol.ReadData,
 
