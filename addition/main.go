@@ -7,8 +7,6 @@ import (
 	// Use the new AXI protocol package
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
-
-	"github.com/ReconfigureIO/addition"
 )
 
 // The Top function will be presented as a kernel
@@ -35,7 +33,7 @@ func Top(
 	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
 	// Calculate the value
-	val := addition.Add(a, b)
+	val := a + b
 
 	// Write it back to the pointer the host requests
 	aximemory.WriteUInt32(
