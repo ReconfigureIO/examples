@@ -1,6 +1,6 @@
 # Array Histogram Example
 
-In this example some random sample data is sent to the FPGA, it is then sorted into bins to create a histogram. The process of sorting the data has been parallelized to work efficiently on the FPGA, the sample data is held in an array, and while the FPGA reads the sample data in from the array it concurrently sorts the data and writes it back int a new channel.
+In this example some random sample data is sent to the FPGA, it is then sorted into bins to create a histogram. The process of sorting the data has been parallelized to work efficiently on the FPGA – the sample data is held in an array, and while the FPGA reads the sample data in from the array it concurrently sorts the data and writes it back into a new channel.
 
 ## Structure
 

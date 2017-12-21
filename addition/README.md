@@ -1,6 +1,7 @@
 # Addition Example
 
 This example passes two numbers to the FPGA, they are added together and the result in returned.
+
 ## Structure
 
 This directory contains a code for and FPGA located at `main.go`. It also has a
