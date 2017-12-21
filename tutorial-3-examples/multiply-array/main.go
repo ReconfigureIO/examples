@@ -1,17 +1,18 @@
 package main
 
 import (
-	// Import the entire framework (including bundled verilog)
+	// Import the entire framework for interracting with SDAccel from Go (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
 
-	// Use the new AXI protocol package
+	// Use the new AXI protocol package for interracting with memory
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
 func Top(
-	// Specify inputs and outputs to the kernel. Tell the kernel where to find data in shared memory, what data type
-	// to expect or pass single integers directly to the kernel by sending them to the FPGA's control register
+	// Pass a pointer to shared memory to tell the FPGA where to find the data to be operated on,
+	// and a pointer to the space in shared memory where the result should be stored. Also tell the FPGA
+	// the length that the data will be.
 
 	inputData uintptr,
 	outputData uintptr,
@@ -24,8 +25,6 @@ func Top(
 	memWriteAddr chan<- axiprotocol.Addr,
 	memWriteData chan<- axiprotocol.WriteData,
 	memWriteResp <-chan axiprotocol.WriteResp) {
-
-	// Do whatever needs doing with the data from the host
 
 	// Read all the input data into a channel
 	inputChan := make(chan uint32)
