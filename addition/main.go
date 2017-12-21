@@ -7,8 +7,6 @@ import (
 	// Use the new AXI protocol package for interracting with memory
 	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
 	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
-
-	"github.com/ReconfigureIO/addition"
 )
 
 func Top(
@@ -34,7 +32,7 @@ func Top(
 	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
 	// Add the two input integers together
-	val := addition.Add(a, b)
+	val := a + b
 
 	// Write the result of the addition to the shared memory address provided by the host
 	aximemory.WriteUInt32(

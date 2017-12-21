@@ -1,0 +1,7 @@
+version: '2'
+services:
+  go:
+    image: golang:1.9
+    working_dir: /go/src/github.com/ReconfigureIO/sdaccel
+    volumes:
+      - .:/go/src/github.com/ReconfigureIO/sdaccel
