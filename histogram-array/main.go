@@ -29,7 +29,7 @@ func Top(
 	memWriteData chan<- axiprotocol.WriteData,
 	memWriteResp <-chan axiprotocol.WriteResp) {
 
-  // Create a variable for the result
+  // Create an array to hold the histogram data as it is sorted
 	var histogram [512]uint32
 
 	// Read all of the input data into a channel
