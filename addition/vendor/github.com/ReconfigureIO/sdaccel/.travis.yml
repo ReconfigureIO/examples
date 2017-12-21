@@ -1,0 +1,36 @@
+language: go
+go_import_path: github.com/ReconfigureIO/sdaccel
+
+go:
+  - 1.9
+
+script:
+  - make test
+  - make all
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "F3sXhpMX7iX2ubqi/Z42o1jmUozYjQdtOWDwJhWi00wDFIBXD8cmCC5+Cry+R2dOINkMTh69PbP7vYEkZvDEcBNUbVZpkieSXC46RGSzDFDH8wI2ACp24APWYprUBx4YPJsfNNmFnhdFgEQFBWIfUq1arI5w11oVlcNivnHnj0xAgVEBWFyRSy3h2uLqeVogem3EmRPAFdLJCplGzIZfiL7Bcnu5+yIUsSFGQJqWpDb0OWxfyZWqPQdt5kV3R8akhXHXuVkoAHgr3rtopoSG2wpxn/LJpenkmApNV0XpU7+DIm5x30XETjnSP9iZyrVnCxFF/gNDCTtnX73VF0mkIdlgnIlWEqZpr37MJtlaEFfrzbTICrkwDTqnf5TBzYE/AlCFOdO6vRnCtQ8oFBdUetAAFCpTLpQLTGThO/NijWZtn0EiVTsH+vP7kxnQrdgAD+m5lNKIdJuDWGnGsuKYUncTFE8akZErpe39XF5aqk5ikYCBhVVXFXiX8oAtNG060XkGdDXPb0mgpPJusodgm4Zp36O7PfElIcS1Z4mpMFoUqekJNoHM/oRP53MpQJY4xgakejFTpxgjejXkhUWNcOZbE3C9/lEF0d4VMVA0ip4Mb3q90vwqMgutq6GSgbkFlwf4Ck8Xf8Bcl4BLq2T7rhmJDRJKnnCs0UKWyT3cBBM="
+  file: dist/fix
+  on:
+    repo: ReconfigureIO/sdaccel
+  # don't delete the artifacts from previous phases
+  skip_cleanup: true
+  # deploy when a new tag is pushed
+  on:
+    tags: true
+
+branches:
+  only:
+    # Pushes and PR to the master branch
+    - master
+    # IMPORTANT Ruby regex to match tags. Required, or travis won't trigger deploys when a new tag
+    # is pushed. This regex matches semantic versions like v1.2.3-rc4+2016.02.22
+    - /^v\d+\.\d+\.\d+.*$/
+
+notifications:
+  email:
+    on_success: never
+  slack:
+    secure: UJ5HojrImmU6s8HKe0iGJr4QZLCwAdZfttQMZvk2MpQH+riFV+garnxcC20XDWbnjPzWUXWjO61Jbm7nqpbY2ZuNQZgpff6fZuWA78nifUFCbXolN4ntXY1cAepeYGSr+nTm3uNolOfmWhHcxxcEvfdgKlqp09Ni0ORuVinMEqk3nWS4npyo8J2keqk7IzKUlyQP+KsvVsEFRR7BNmfciH+JzhOIWujlLQzETtpYBayls1p+hhpTs5qbJCNfJNMLGLMsq/Ah/JN6XYqA78fXcmuyn6lSXeqKaOGzCTAiFmC5F0rvJC/6KJDVRiGFGLomwEduD00KktCUElBJoD4lgbNuC8cgkFsI8duzj0qiDnlUBIY27LhbIONp6F2lHojMrarD72CK0bTV0Fvire03A25NnvGi2uCOXJ5SVQbSM0eTbdTwQScnbD6GGQlHXzvLXF+CZIIeWjljwrsppaSyoSfngHM0Bxe3IT/mrlBGz+85Sc6yBhVyANWBI0JF8fBjGqUQ+CoAkWk0JqP5S5i3zc+mO8qWS8vVHpkTY3gDtu9+t1bQVWxZNHzY2v2ykpWUqnnTQtc4cMwmQnjzoZjiQjqyphy6x+26NcD+O35stnw3F40GLeW4pCVImDIRQ49cbJ2ow2VNkqa1NBOKgWai98yi1h6eesTvKJTLgytI6Lg=
