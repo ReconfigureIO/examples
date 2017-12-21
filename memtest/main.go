@@ -3,24 +3,26 @@ package main
 import (
 	// import the entire framework (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
-	"github.com/ReconfigureIO/sdaccel/axi/memory"
+
+	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
+	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
 )
 
 // magic identifier for exporting
 func Top(
 	outputData uintptr,
 
-	memReadAddr chan<- memory.Addr,
-	memReadData <-chan memory.ReadData,
+	memReadAddr chan<- axiprotocol.Addr,
+	memReadData <-chan axiprotocol.ReadData,
 
-	memWriteAddr chan<- memory.Addr,
-	memWriteData chan<- memory.WriteData,
-	memResp <-chan memory.Response) {
+	memWriteAddr chan<- axiprotocol.Addr,
+	memWriteData chan<- axiprotocol.WriteData,
+	memResp <-chan axiprotocol.WriteResp) {
 
-	go memory.DisableReads(memReadAddr, memReadData)
+	go aximemory.DisableReads(memReadAddr, memReadData)
 
 	for out := uint64(0); out < 4294967295; out += 4 {
-		memory.Write(outputData, 1, memWriteAddr, memWriteData, memResp)
+		aximemory.Write(outputData, 1, memWriteAddr, memWriteData, memResp)
 	}
 
 }
