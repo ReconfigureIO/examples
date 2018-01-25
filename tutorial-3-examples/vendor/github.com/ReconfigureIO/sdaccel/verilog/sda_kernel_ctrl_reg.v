@@ -188,7 +188,7 @@ begin
     begin
       goValid_d = 1'b1;
     end
-  end;
+  end
 
   // Detect completion of the SDAccel kernel operation.
   if (~ctrlBitIdle_q & doneValid)
