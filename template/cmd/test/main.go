@@ -2,7 +2,7 @@ package main
 
 import (
     "os"
-    "xcl"
+    "github.com/ReconfigureIO/sdaccel/xcl"
 )
 
 func main() {
