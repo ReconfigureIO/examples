@@ -32,9 +32,14 @@ func Top(
 	go axiprotocol.ReadDisable(memReadAddr, memReadData)
 
 	// Add the two input integers together
-	val := a + b
+	val := Add(a, b)
 
 	// Write the result of the addition to the shared memory address provided by the host
 	aximemory.WriteUInt32(
 		memWriteAddr, memWriteData, memWriteResp, false, addr, val)
+}
+
+// function to add two uint32s
+func Add(a uint32, b uint32) uint32 {
+	return a + b
 }
