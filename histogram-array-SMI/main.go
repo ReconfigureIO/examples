@@ -8,6 +8,11 @@ import (
 	"github.com/ReconfigureIO/sdaccel/smi"
 )
 
+// function to calculate the bin for each sample
+func CalculateIndex(sample uint32) uint16 {
+	return uint16(sample) >> (16 - 9)
+}
+
 // magic identifier for exporting
 func Top(
 	inputData uintptr,
@@ -30,11 +35,9 @@ func Top(
 	for ; length > 0; length-- {
 		// First we'll pull of each sample from the channel
 		sample := <-inputChan
-		// calculate the bin for the histogram
-		index := uint16(sample) >> (16 - 9)
 
-		// And increment the value in that bin
-		histogram[uint(index)] += 1
+		// And increment the value in the correct bin using the calculation function
+		histogram[CalculateIndex(sample)] += 1
 	}
 
 	data := make(chan uint32)
@@ -44,6 +47,7 @@ func Top(
 		}
 	}()
 
+// Write the results to shared memory
 	smi.WriteBurstUInt32(
 		writeReq, writeResp, outputData, smi.DefaultOptions, 512, data)
 }
