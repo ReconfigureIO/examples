@@ -15,16 +15,20 @@ func CalculateIndex(sample uint32) uint16 {
 
 // magic identifier for exporting
 func Top(
+	// Three operands from the host. Pointers to the input data and the space for the result in shared
+	// memory and the length of the input data so the FPGA knows what to expect.
 	inputData uintptr,
 	outputData uintptr,
 	length uint32,
 
+	// Set up channels for interacting with the shared memory
 	readReq chan<- smi.Flit64,
 	readResp <-chan smi.Flit64,
 
 	writeReq chan<- smi.Flit64,
 	writeResp <-chan smi.Flit64) {
 
+	// Create an array to hold the histogram data as it is sorted
 	histogram := [512]uint32{}
 
 	// Read all of the input data into a channel
@@ -40,6 +44,7 @@ func Top(
 		histogram[CalculateIndex(sample)] += 1
 	}
 
+	// Write the results to a new channel
 	data := make(chan uint32)
 	go func() {
 		for i := 0; i < 512; i++ {
