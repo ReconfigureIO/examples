@@ -17,4 +17,3 @@ test-real:
 	$(TMPDIR)/reco check --source $(shell pwd)/histogram-array-SMI
 	$(TMPDIR)/reco check --source $(shell pwd)/histogram-parallel
 	$(TMPDIR)/reco check --source $(shell pwd)/memcopy
-	$(TMPDIR)/reco check --source $(shell pwd)/memtest	
