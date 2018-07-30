@@ -74,8 +74,6 @@ func main() {
 	}
 
 	log.Println()
-	// log.Printf("We sent an array of 20 integers to the FPGA for processing: \n")
-	// log.Printf("Input: %v \n", input)
 	log.Printf("We programmed the FPGA to sort 20 integers into bins, and these are the results we got: \n")
 
 	// Calculate the same values locally to check the FPGA got it right
