@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/ReconfigureIO/sdaccel/xcl"
 	"log"
 	"math/rand"
 	"reflect"
+
+	"github.com/ReconfigureIO/sdaccel/xcl"
 )
 
 // Define constants to be used in func main
@@ -71,6 +72,11 @@ func main() {
 	if err != nil {
 		log.Fatal("binary.Read failed:", err)
 	}
+
+	log.Println()
+	// log.Printf("We sent an array of 20 integers to the FPGA for processing: \n")
+	// log.Printf("Input: %v \n", input)
+	log.Printf("We programmed the FPGA to sort 20 integers into bins, and these are the results we got: \n")
 
 	// Calculate the same values locally to check the FPGA got it right
 	var expected [HISTOGRAM_WIDTH]uint32
