@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/ReconfigureIO/sdaccel/xcl"
+	"log"
 	"os"
+
+	"github.com/ReconfigureIO/sdaccel/xcl"
 )
 
 func main() {
@@ -38,17 +40,21 @@ func main() {
 
 	// Create a variable for the result from the FPGA and read the result into it.
 	// We have also set an error condition to tell us if the read fails.
-	var ret uint32
-	err := binary.Read(buff.Reader(), binary.LittleEndian, &ret)
+	var output uint32
+	err := binary.Read(buff.Reader(), binary.LittleEndian, &output)
 	if err != nil {
 		fmt.Println("binary.Read failed:", err)
 	}
 
 	// Print the value we got from the FPGA
-	fmt.Printf("%d\n", ret)
+	log.Println()
+	log.Printf("We sent two integers '1' and '2' to the FPGA.")
+	log.Printf("We programmed the FPGA to add them together and this is the result we got:")
+	log.Printf("Output: %v ", output)
+	log.Println()
 
 	// Check the result is correct and if not, return an error
-	if ret != 3 {
+	if output != 3 {
 		os.Exit(1)
 	}
 }

@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/ReconfigureIO/sdaccel/xcl"
 	"log"
 	"math/rand"
 	"reflect"
+
+	"github.com/ReconfigureIO/sdaccel/xcl"
 )
 
 // Define constants to be used in func main
@@ -82,6 +83,9 @@ func main() {
 	if !reflect.DeepEqual(expected, output) {
 		log.Fatalf("%v != %v\n", output, expected)
 	}
+
+	log.Println()
+	log.Printf("We programmed the FPGA to sort 20 integers into bins, and these are the results we got: \n")
 
 	// Print out each bin and coresponding value
 	for i, val := range output {
