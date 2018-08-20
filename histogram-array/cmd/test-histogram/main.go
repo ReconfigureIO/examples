@@ -85,7 +85,9 @@ func main() {
 	}
 
 	log.Println()
-	log.Printf("We programmed the FPGA to sort 20 integers into bins, and these are the results we got: \n")
+	log.Printf("we sent some sample data to the FPGA: \n")
+	log.Printf("Input: %v", input)
+	log.Printf("We programmed the FPGA to sort our sample data into bins and these are the results we got: \n")
 
 	// Print out each bin and coresponding value
 	for i, val := range output {
