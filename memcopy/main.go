@@ -3,9 +3,7 @@ package main
 import (
 	// Import the entire framework (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
-	// Use the new AXI protocol package
-	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
-	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
+	"github.com/ReconfigureIO/sdaccel/smi"
 )
 
 // Magic identifier for exporting
@@ -14,16 +12,16 @@ func Top(
 	outputData uintptr,
 	length uint32,
 
-	memReadAddr chan<- axiprotocol.Addr,
-	memReadData <-chan axiprotocol.ReadData,
+	// Set up channels for interacting with the shared memory
+	readReq chan<- smi.Flit64,
+	readResp <-chan smi.Flit64,
 
-	memWriteAddr chan<- axiprotocol.Addr,
-	memWriteData chan<- axiprotocol.WriteData,
-	memWriteResp <-chan axiprotocol.WriteResp) {
+	writeReq chan<- smi.Flit64,
+	writeResp <-chan smi.Flit64) {
 
 	data := make(chan uint64)
-	go aximemory.ReadBurstUInt64(
-		memReadAddr, memReadData, true, inputData, length, data)
-	aximemory.WriteBurstUInt64(
-		memWriteAddr, memWriteData, memWriteResp, true, outputData, length, data)
+	go smi.ReadBurstUInt64(
+		readReq, readResp, inputData, smi.DefaultOptions, length, data)
+	smi.WriteBurstUInt64(
+		writeReq, writeResp, outputData, smi.DefaultOptions, length, data)
 }

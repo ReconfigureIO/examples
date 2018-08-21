@@ -4,46 +4,40 @@ import (
 	// Import the entire framework for interracting with SDAccel from Go (including bundled verilog)
 	_ "github.com/ReconfigureIO/sdaccel"
 
-  // Use the new AXI protocol package for interracting with memory
-	axiarbitrate "github.com/ReconfigureIO/sdaccel/axi/arbitrate"
-	aximemory "github.com/ReconfigureIO/sdaccel/axi/memory"
-	axiprotocol "github.com/ReconfigureIO/sdaccel/axi/protocol"
+	// Use the SMI protocol package
+	"github.com/ReconfigureIO/sdaccel/smi"
 )
 
 func Top(
-	// Three operands from the host. Pointers to the input data and the space for the result in shared
-	// memory and the length of the input data so the FPGA knows what to expect.
+	// For this example, we have 3 arguments: Pointers to the input data, the
+	// space for the result and the length of the input data so the FPGA knows
+	// what to expect.
 	inputData uintptr,
 	outputData uintptr,
 	length uint32,
 
-	// Set up channels for interacting with the shared memory
-	memReadAddr chan<- axiprotocol.Addr,
-	memReadData <-chan axiprotocol.ReadData,
+	// Set up SMI ports for interacting with the shared memory,
+	// two read ports and one write port
 
-	memWriteAddr chan<- axiprotocol.Addr,
-	memWriteData chan<- axiprotocol.WriteData,
-	memWriteResp <-chan axiprotocol.WriteResp) {
+	readAReq chan<- smi.Flit64,
+	readAResp <-chan smi.Flit64,
+
+	readBReq chan<- smi.Flit64,
+	readBResp <-chan smi.Flit64,
+
+	writeReq chan<- smi.Flit64,
+	writeResp <-chan smi.Flit64) {
 
 	readRespChan := make(chan uint32)
 	incrRespChan := make(chan uint32)
 
-	// Create a 2-way AXI bus arbiter so that two goroutines can perform
-	// concurrent AXI memory reads.
-	memReadAddr0 := make(chan axiprotocol.Addr)
-	memReadData0 := make(chan axiprotocol.ReadData)
-	memReadAddr1 := make(chan axiprotocol.Addr)
-	memReadData1 := make(chan axiprotocol.ReadData)
-	go axiarbitrate.ReadArbitrateX2(
-		memReadAddr, memReadData, memReadAddr0, memReadData0,
-		memReadAddr1, memReadData1)
-
 	go func() {
 		// Length is the number of addresses we are supposed to read
 		// so this block queues reads from each one in turn.
+
 		for i := length; i != 0; i-- {
-			readRespChan <- aximemory.ReadUInt32(
-				memReadAddr0, memReadData0, true, inputData)
+			readRespChan <- smi.ReadUInt32(
+				readAReq, readAResp, inputData, smi.DefaultOptions)
 			inputData += 4
 		}
 	}()
@@ -58,12 +52,11 @@ func Top(
 			// And this is that index as a pointer to external memory.
 			outputPointer := outputData + uintptr(index<<2)
 			// Perform an increment operation on that location.
-			current := aximemory.ReadUInt32(
-				memReadAddr1, memReadData1, true, outputPointer)
+			current := smi.ReadUInt32(
+				readBReq, readBResp, outputPointer, smi.DefaultOptions)
 			current += 1
-			aximemory.WriteUInt32(
-				memWriteAddr, memWriteData, memWriteResp, true,
-				outputPointer, current)
+			smi.WriteUInt32(
+				writeReq, writeResp, outputPointer, smi.DefaultOptions, current)
 			incrRespChan <- current
 		}
 	}()
