@@ -33,5 +33,5 @@ func Top(
 
 	// Write the result of the addition to the shared memory address provided by the host
 	smi.WriteUInt32(
-		writeReq, writeResp, addr, 32, val)
+		writeReq, writeResp, addr, smi.DefaultOptions, val)
 }
