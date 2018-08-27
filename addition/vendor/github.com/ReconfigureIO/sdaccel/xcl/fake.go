@@ -213,8 +213,8 @@ func (kernel *Kernel) SetArg(index uint, val uint32) {
 /*
 Run will start execution of the Kernel with the number of dimensions. Most uses of this should be called as
 
-    kernel.Run(1,1,1)
+    kernel.Run()
 
 */
-func (kernel *Kernel) Run(x, y, z uint) {
+func (kernel *Kernel) Run(_ ...uint) {
 }

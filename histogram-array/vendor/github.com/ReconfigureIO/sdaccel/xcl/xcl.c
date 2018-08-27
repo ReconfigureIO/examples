@@ -97,6 +97,7 @@ char* xcl_create_and_set(const char* str) {
 xcl_world xcl_world_single() {
 	int err;
 	xcl_world world;
+	memset(&world, 0, sizeof(xcl_world));
 	cl_uint num_platforms;
 
 	char *xcl_mode = getenv("XCL_EMULATION_MODE");
