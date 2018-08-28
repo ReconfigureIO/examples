@@ -303,11 +303,29 @@ func (kernel *Kernel) SetArg(index uint, val uint32) {
 }
 
 /*
-Run will start execution of the Kernel with the number of dimensions. Most uses of this should be called as
+Run will start execution of the Kernel. Most uses of this should be called as
 
-    kernel.Run(1,1,1)
+    kernel.Run()
 
 */
-func (kernel *Kernel) Run(x, y, z uint) {
-	C.xcl_run_kernel3d(kernel.program.world.cw, kernel.kernel, C.size_t(x), C.size_t(y), C.size_t(z))
+func (kernel *Kernel) Run(_ ...uint) error {
+	size := C.size_t(1)
+	event := new(C.cl_event)
+
+	errCode := C.clEnqueueNDRangeKernel(kernel.program.world.cw.command_queue, kernel.kernel, 1,
+		nil, &size, &size, 0, nil, event)
+	err := errorCode(errCode)
+	if err != nil {
+		return err
+	}
+
+	errCode = C.clFlush(kernel.program.world.cw.command_queue)
+	err = errorCode(errCode)
+	if err != nil {
+		return err
+	}
+
+	errCode = C.clWaitForEvents(1, event)
+	err = errorCode(errCode)
+	return err
 }

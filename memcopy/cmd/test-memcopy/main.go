@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/binary"
-	"github.com/ReconfigureIO/sdaccel/xcl"
 	"log"
 	"math/rand"
 	"reflect"
 	"testing/quick"
 	"time"
+
+	"github.com/ReconfigureIO/sdaccel/xcl"
 )
 
 const DATA_WIDTH = 12
@@ -42,6 +43,9 @@ func main() {
 		var ret [DATA_WIDTH]uint64
 		err := binary.Read(outputBuff.Reader(), binary.LittleEndian, &ret)
 
+		log.Printf("Input: %v", input)
+		log.Printf("Result: %v", ret)
+
 		if err != nil {
 			log.Fatal("binary.Read failed:", err)
 		}
@@ -51,9 +55,11 @@ func main() {
 			return false
 		}
 		return true
+
 	}
 
 	if err := quick.Check(memcpy, &conf); err != nil {
 		log.Fatal(err)
+
 	}
 }
