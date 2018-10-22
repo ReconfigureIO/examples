@@ -108,6 +108,6 @@ func (s *State) feedFPGA() {
 	// Read the results into our output variable
 	binary.Read(s.outputBuff.Reader(), binary.LittleEndian, &s.output)
 
-	log.Printf("Input: %v ", s.input)
-	log.Printf("Output: %v ", s.output)
+	// log.Printf("Input: %v ", s.input)
+	// log.Printf("Output: %v ", s.output)
 }
