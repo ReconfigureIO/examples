@@ -1,8 +1,8 @@
 package: .
 import:
 - package: github.com/ReconfigureIO/sdaccel
-  version: ~0.18.0
-  subpakages:
+  version: ~0.20.1
+  subpackages:
   - axi/arbitrate
   - axi/memory
   - axi/protocol
