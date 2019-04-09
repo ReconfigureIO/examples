@@ -43,12 +43,13 @@ func Top(
 	for ; length > 0; length-- {
 		// First we'll pull of each sample from the channel
 		sample := <-inputChan
+		// calculate the bin for the histogram
+		index := uint16(sample) >> (16 - 9)
 
-		// And increment the value in the correct bin using the calculation function
-		histogram[CalculateIndex(sample)] += 1
+		// And increment the value in that bin
+		histogram[uint(index)] += 1
 	}
 
-	// Write the results to a new channel
 	data := make(chan uint32)
 	go func() {
 		for i := 0; i < 512; i++ {

@@ -1,0 +1,12 @@
+hash: 7fda8f9f86942dc7c841addb9f618c9b259f5f00400113e5895b404dcb1b3f78
+updated: 2017-12-14T15:50:40.173112963Z
+imports:
+- name: github.com/ReconfigureIO/fixed
+  version: d19298b24b0a9b23f0d19a226024131d3c3ef7a0
+- name: github.com/ReconfigureIO/sdaccel
+  version: e93e5713d49cc1354dcd1d35cfaef85ba151e0a3
+  subpackages:
+  - axi/memory
+  - axi/protocol
+  - xcl
+testImports: []

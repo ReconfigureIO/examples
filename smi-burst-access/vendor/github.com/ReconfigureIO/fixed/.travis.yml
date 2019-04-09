@@ -1,0 +1,19 @@
+language: go
+go_import_path: github.com/ReconfigureIO/fixed
+
+go:
+  - 1.9
+
+install:
+- curl https://glide.sh/get | sh
+
+- curl -LO https://s3.amazonaws.com/reconfigure.io/reco/releases/reco-v0.2.0-x86_64-linux.zip
+- unzip reco-v0.2.0-x86_64-linux.zip
+- sudo mv reco /usr/local/bin
+- reco version
+
+script:
+  - make test
+  - make install
+  - make vendor
+  - cd examples/mult && reco check

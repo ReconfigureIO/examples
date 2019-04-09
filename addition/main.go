@@ -24,14 +24,13 @@ func Top(
 	b uint32,
 	addr uintptr,
 
-	// Set up channel to write result to shared memory
-	writeReq chan<- smi.Flit64,
-	writeResp <-chan smi.Flit64) {
+	// Set up channels for interacting with the shared memory
+	request chan<- smi.Flit64,
+	response <-chan smi.Flit64) {
 
 	// Add the two input integers together
 	val := Add(a, b)
 
 	// Write the result of the addition to the shared memory address provided by the host
-	smi.WriteUInt32(
-		writeReq, writeResp, addr, smi.DefaultOptions, val)
+	smi.WriteUInt32(request, response, addr, smi.DefaultOptions, val)
 }

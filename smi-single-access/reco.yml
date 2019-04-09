@@ -1,0 +1,4 @@
+memory_interface: smi
+memory_width: 256
+ports: 9
+compiler:rio
